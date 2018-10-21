@@ -42,7 +42,8 @@ defmodule Smartmeter.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:nerves_uart, "~> 1.2"},
-      {:p1_parser, "~> 0.1.0"}
+      {:p1_parser, "~> 0.1.4"},
+      {:instream, "~> 0.18"}
     ]
   end
 
@@ -56,7 +57,7 @@ defmodule Smartmeter.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end

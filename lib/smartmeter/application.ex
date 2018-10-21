@@ -14,7 +14,8 @@ defmodule Smartmeter.Application do
       supervisor(SmartmeterWeb.Endpoint, []),
       # Start your own worker by calling: Smartmeter.Worker.start_link(arg1, arg2, arg3)
       # worker(Smartmeter.Worker, [arg1, arg2, arg3]),
-      worker(Smartmeter.Serial, [Smartmeter.Serial])
+      worker(Smartmeter.Serial, [Smartmeter.Serial]),
+      Smartmeter.InfluxConnection
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

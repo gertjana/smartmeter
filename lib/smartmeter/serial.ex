@@ -23,14 +23,20 @@ defmodule Smartmeter.Serial do
         device =  Smartmeter.Config.get("serial_device", :string)
         speed = Smartmeter.Config.get("serial_baudrate", :integer)
         {:ok, pid} = Nerves.UART.start_link
-        info "Opening serial connection #{device} #{speed}"
         connect(pid, device, speed)
+        info "Opened serial connection #{inspect(pid)} #{device} #{speed}"
       false ->
-        info "Serial connection not enabled"
+        warn "Serial connection not enabled"
     end
 
 
     {:ok, %{}}
+  end
+
+  def handle_info({:nerves_uart, device, message}, state) do
+    info message
+    Smartmeter.Measurements.persist(message)
+    {:noreply, state}
   end
 
   def handle_call({:list_ports}, _from, state) do

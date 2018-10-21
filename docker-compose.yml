@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  # Define an InfluxDB service
+  influxdb:
+    image: influxdb:alpine
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+    ports:
+      - "8086:8086"
+  # Define a Chronograf service
+  chronograf:
+    image: chronograf
+    volumes:
+      - ./data/chronograf:/var/lib/chronograf
+    ports:
+      - "8888:8888"
+      - "10000:10000"
+    links:
+      - influxdb
+  grafana:
+    image: grafana/grafana:latest
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    links:
+      - influxdb
+  # Define a service for using the influx CLI tool.
+  # docker-compose run influxdb-cli
+  influxdb-cli:
+    image: influxdb
+    entrypoint:
+      - influx
+      - -host
+      - influxdb
+    links:
+      - influxdb
