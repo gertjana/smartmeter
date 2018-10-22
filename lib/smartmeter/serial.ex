@@ -28,12 +28,10 @@ defmodule Smartmeter.Serial do
       false ->
         warn "Serial connection not enabled"
     end
-
-
     {:ok, %{}}
   end
 
-  def handle_info({:nerves_uart, device, message}, state) do
+  def handle_info({:nerves_uart, _device, message}, state) do
     info message
     Smartmeter.Measurements.persist(message)
     {:noreply, state}
@@ -48,8 +46,8 @@ defmodule Smartmeter.Serial do
     Nerves.UART.open(pid, device, speed: rate, framing: {Nerves.UART.Framing.Line, separator: "\r\n"}, active: true)
   end
 
-  def handle_cast({:nerves_uart, pid, data}, _from, _state) do
+  def handle_cast({:nerves_uart, _pid, data}, _from, state) do
     info inspect(data)
-    :no_reply
+    {:no_reply, state}
   end
 end
