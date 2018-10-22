@@ -1,16 +1,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
-#include <ESP8266mDNS.h>
-
-
-const char* ssid = "MoTeds2.4";
-const char* password = "?????????";
+#include "secrets.h"
 
 ESP8266WebServer server(80);
 
 const long interval = 10000;  
 unsigned long previousMillis = 0; 
+bool hammerTime = true;
 
 char* message[]={"/XMX5LGBBFG10",
   " ",
@@ -71,10 +68,6 @@ void setup(void){
     delay(500);
   }
 
-  if (MDNS.begin("esp8266")) {
-    Serial.println("MDNS responder started");
-  }
-
   server.on("/", handleRoot);
 
   server.onNotFound(handleNotFound);
@@ -90,9 +83,11 @@ void loop(void){
   if (currentMillis - previousMillis >= interval) {
     previousMillis = currentMillis;
 
-    for (int i = 0; i < 26; i++) {
-      Serial.println(message[i]);
-      delay(100);
+    if (hammerTime) {
+      for (int i = 0; i < 26; i++) {
+        Serial.println(message[i]);
+        delay(100);
+      }
     }
   }
 }

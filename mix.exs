@@ -42,7 +42,7 @@ defmodule Smartmeter.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:nerves_uart, "~> 1.2"},
-      {:p1_parser, "~> 0.1.4"},
+      {:p1_parser, "~> 0.1.5"},
       {:instream, "~> 0.18"}
     ]
   end
