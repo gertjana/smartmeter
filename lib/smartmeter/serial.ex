@@ -32,7 +32,7 @@ defmodule Smartmeter.Serial do
   end
 
   def handle_info({:nerves_uart, _device, message}, state) do
-    info message
+    debug message
     Smartmeter.Measurements.persist(message)
     {:noreply, state}
   end

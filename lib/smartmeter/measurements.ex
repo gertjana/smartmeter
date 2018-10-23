@@ -12,7 +12,7 @@ defmodule Smartmeter.Measurements do
             {:error, reason} -> warn reason
           end
 			{:error, reason} ->
-          error reason
+          warn reason
 		end
 	end
 
@@ -20,7 +20,13 @@ defmodule Smartmeter.Measurements do
 
   defp tag(data, tag, value), do: %{data | tags: Map.put(data.tags, tag, value)}
 
-  defp timestamp(data), do: %{data | timestamp: :os.system_time(:nano_seconds)}
+  defp timestamp(data, datetime_str) do
+    timestamp = datetime_str 
+                |> Timex.parse!("{ISO:Extended}")
+                |> Timex.to_datetime
+                |> DateTime.to_unix(:nanoseconds)
+    %{data | timestamp: timestamp}
+  end 
 
   def to_serie(%Telegram.TotalEnergy{direction: direction, tariff: tariff, unit: "kWh", value: value}) do
     {:ok, %Series.TotalEnergy{}
@@ -28,35 +34,42 @@ defmodule Smartmeter.Measurements do
       |> tag(:direction, direction)
       |> tag(:energy, :total)
       |> tag(:tariff, tariff)
-      |> timestamp
     }
   end
 
-  def to_serie(%Telegram.CurrentEnergy{direction: direction, unit: "kW", value: value}) do
-    {:ok, %Series.CurrentPower{}
+  def to_serie(%Telegram.ActivePower{direction: direction, phase: phase, unit: "kW", value: value}) do
+    {:ok, %Series.ActivePower{}
       |> value(value)
       |> tag(:direction, direction)
-      |> tag(:power, :current)
-      |> timestamp
+      |> tag(:phase, phase)
+      |> tag(:power, :active)
     }
   end
 
   def to_serie(%Telegram.Voltage{phase: phase, unit: "V", value: value}) do
     {:ok, %Series.Voltage{}
       |> value(value)
-      |> tag(:voltage, :current)
+      |> tag(:voltage, :active)
       |> tag(:phase, phase)
-      |> timestamp
     }
   end
 
   def to_serie(%Telegram.Amperage{phase: phase, unit: "A", value: value}) do
     {:ok, %Series.Amperage{}
       |> value(value)
-      |> tag(:amperage, :current)
+      |> tag(:amperage, :active)
       |> tag(:phase, phase)
-      |> timestamp
     }
+  end
+
+
+  def to_serie(%Telegram.MbusDeviceMeasurement{channel: channel, timestamp: timestamp, unit: "m3", value: value}) do
+    {:ok, %Series.MbusMeasurement{}
+      |> value(value)
+      |> tag(:channel, channel)
+      |> tag(:volume, :total)
+      |> timestamp(timestamp)
+  }
   end
 
   def to_serie(unknown) do

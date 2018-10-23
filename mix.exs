@@ -20,7 +20,7 @@ defmodule Smartmeter.Mixfile do
   def application do
     [
       mod: {Smartmeter.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :timex]
     ]
   end
 
@@ -42,8 +42,9 @@ defmodule Smartmeter.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:nerves_uart, "~> 1.2"},
-      {:p1_parser, "~> 0.1.5"},
-      {:instream, "~> 0.18"}
+      {:p1_parser, "~> 0.1.6"},
+      {:instream, "~> 0.18"},
+      {:timex, "~> 3.1"}
     ]
   end
 

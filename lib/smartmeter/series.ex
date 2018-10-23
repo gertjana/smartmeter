@@ -1,6 +1,6 @@
 defmodule Smartmeter.Series do
 	
-	defmodule CurrentPower do
+	defmodule ActivePower do
 	  use Instream.Series
 
 	  series do
@@ -9,6 +9,7 @@ defmodule Smartmeter.Series do
 
 	    tag :power
       tag :direction
+      tag :phase
 
 	    field :value
 	  end
@@ -54,6 +55,20 @@ defmodule Smartmeter.Series do
       tag :phase
 
       field :value
+    end
+  end
+
+  defmodule MbusMeasurement do
+    use Instream.Series
+
+    series do
+      database    "smartmeter_measurements"
+      measurement "mbus_measurement"
+
+      tag :volume
+      tag :channel
+
+      field :value      
     end
   end
 end
