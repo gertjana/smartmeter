@@ -26,9 +26,9 @@ char* message[]={"/XMX5LGBBFG10",
   "1-0:99.97.0(3)(0-0:96.7.19)(160315184219W)(0000000310*s)(160207164837W)(0000000981*s)(151118085623W)(0000502496*s)",
   "1-0:32.32.0(00000)",
   "1-0:32.36.0(00000)",
-  "0-0:96.13.1()",
-  "0-0:96.13.0()",
-  "1-0:31.7.0(003*A)",
+  "0-0:96.13.1(3031203631203831)",
+  "0-0:96.13.0(303132333435363738393A3B3C3D3E3F303132333435363738393A3B3C3D3E3F303132333435363738393A3B)",
+  "1-0:31.7.0(005*A)",
   "1-0:21.7.0(00.494*kW)",
   "1-0:22.7.0(00.000*kW)",
   "0-1:24.1.0(003)",
@@ -39,7 +39,7 @@ char* message[]={"/XMX5LGBBFG10",
 
 void handleRoot() {
   String message = server.arg("text");
-  server.send(200, "text/html", "<html><body><form method='POST'><textarea style='width:80%;height:80%;' id='text' name='text'>"+message+"</textarea><input type='submit' value='Send'></body></html>");
+  server.send(200, "text/html", "<html><body><form method='POST'><textarea style='width:50%;height:100px;' id='text' name='text'>"+message+"</textarea><input type='submit' value='Send'></body></html>");
   Serial.println(message);
 }
 
@@ -63,10 +63,18 @@ void setup(void){
   Serial.begin(115200);
   WiFi.begin(ssid, password);
 
-  // Wait for connection
+  Serial.println("");
+  Serial.print("# ");
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
+    Serial.print(".");
   }
+  Serial.println("");
+  Serial.print("# Connected to ");
+  Serial.println(ssid);
+  Serial.print("# IP address: ");
+  Serial.println(WiFi.localIP());
+
 
   server.on("/", handleRoot);
 

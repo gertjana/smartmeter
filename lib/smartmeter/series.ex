@@ -5,7 +5,7 @@ defmodule Smartmeter.Series do
 
 	  series do
 	    database    "smartmeter_measurements"
-	    measurement "current_power"
+	    measurement "active_power"
 
 	    tag :power
       tag :direction

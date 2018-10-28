@@ -42,9 +42,9 @@ defmodule Smartmeter.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:nerves_uart, "~> 1.2"},
-      {:p1_parser, "~> 0.1.6"},
       {:instream, "~> 0.18"},
-      {:timex, "~> 3.1"}
+      {:timex, "~> 3.1"},
+      {:p1_parser, path: "../p1_parser"},
     ]
   end
 

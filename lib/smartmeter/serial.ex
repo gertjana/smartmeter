@@ -33,7 +33,9 @@ defmodule Smartmeter.Serial do
 
   def handle_info({:nerves_uart, _device, message}, state) do
     debug message
-    Smartmeter.Measurements.persist(message)
+    if ! String.starts_with?(message, "#") do
+      Smartmeter.Measurements.persist(message)
+    end
     {:noreply, state}
   end
 
