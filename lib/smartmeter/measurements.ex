@@ -7,13 +7,18 @@ defmodule Smartmeter.Measurements do
 	def persist(line) do
 		case P1.parse(line) do
 			{:ok, parsed} ->
-          case parsed |> P1.to_struct |> to_serie do
-            {:ok, serie} -> InfluxConnection.save_measurement(serie)
+          debug inspect(parsed)
+          case parsed |> P1.to_struct do
+            {:ok, struct} ->
+              debug inspect(struct)
+              case struct |> to_serie do
+                {:ok, serie} -> InfluxConnection.save_measurement(serie)
+                {:error, reason} -> warn reason
+              end
             {:error, reason} -> warn reason
           end
-			{:error, reason} ->
-          warn reason
-		end
+      {:error, reason} -> warn reason
+ 		end
 	end
 
   defp value(data, value), do: %{data | fields: %{data.fields | value: value}}

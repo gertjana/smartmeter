@@ -3,7 +3,7 @@ defmodule Smartmeter.Config do
   import Ecto.Changeset
   import Logger
 
-  #TODO make it load the config once from the db
+  #TODO make it load the config only once from the db
 
   schema "config" do
     field :key, :string
