@@ -7,7 +7,7 @@ ESP8266WebServer server(80);
 
 const long interval = 10000;  
 unsigned long previousMillis = 0; 
-bool hammerTime = true;
+bool hammerTime = false;
 
 char* message[]={"/XMX5LGBBFG10",
   " ",
@@ -37,10 +37,58 @@ char* message[]={"/XMX5LGBBFG10",
   "!D3B0"
 };
 
+String getPage(String text) {
+  String btn = (hammerTime) ? "btn-success" : "btn-warning";
+  String page = "<html>";
+  page += "  <head>";
+  page += "    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>";
+  page += "    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>";
+  page += "  </head>";
+  page += "  <body>";
+  page += "    <div class='container-fluid'>";
+  page += "      <div class='row'>";
+  page += "        <div class='col-md-12'>";
+  page += "          <h3>ESP8266 based Smartmeter test device</h3>";
+  page += "        </div>";
+  page += "      </div>";
+  page += "      <div class='row'>";
+  page += "        <div class='col-md-6'>";
+  page += "            <label for='hammer_time'>Toggle sending a telegram every 10 seconds</label>";
+  page += "        </div>";
+  page += "        <div class='col-md-12'>";
+  page += "          <form method='POST'>";
+  page += "            <button type='buttonsubmit' name='hammer_time' class='btn "+btn+"'>HammerTime</button>";
+
+  page += "          </form>";
+  page += "        </div>";
+  page += "      </div>";
+  page += "      <div class='row'>";
+  page += "        <div class='col-md-6'>";
+  page += "          <label for='text'>Send some text to the serial port</label>";
+  page += "        </div>";
+  page += "        <div class='col-md-12'>";
+  page += "          <form method='POST'>";
+  page += "            <textarea style='width:50%;height:100px;' id='text' name='text'>"+text+"</textarea>";
+  page += "            <br/><button type='buttonsubmit' name='send' class='btn btn-success'>Send</button>";
+  page += "          </form>";
+  page += "        </div>";
+  page += "      </div>";
+  page += "    </div>";
+  page += "  </body>";
+  page += "</html>";
+  return page;
+}  
+
 void handleRoot() {
-  String message = server.arg("text");
-  server.send(200, "text/html", "<html><body><form method='POST'><textarea style='width:50%;height:100px;' id='text' name='text'>"+message+"</textarea><input type='submit' value='Send'></body></html>");
-  Serial.println(message);
+  String text = "";
+  if (server.hasArg("text")) {
+    text = server.arg("text");
+    Serial.println(text);
+  }
+  if (server.hasArg("hammer_time")) {
+    hammerTime = !hammerTime;
+  }
+  server.send(200, "text/html", getPage(text));
 }
 
 
@@ -94,7 +142,7 @@ void loop(void){
     if (hammerTime) {
       for (int i = 0; i < 26; i++) {
         Serial.println(message[i]);
-        delay(100);
+//        delay(100);
       }
     }
   }
