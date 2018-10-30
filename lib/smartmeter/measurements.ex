@@ -3,6 +3,7 @@ defmodule Smartmeter.Measurements do
   alias Smartmeter.InfluxConnection, as: InfluxConnection
   alias P1.Telegram, as: Telegram
   alias Smartmeter.Series, as: Series
+  alias Smartmeter.Information, as: Information
 
 	def persist(line) do
 		case P1.parse(line) do
@@ -13,7 +14,7 @@ defmodule Smartmeter.Measurements do
               debug inspect(struct)
               case struct |> to_serie do
                 {:ok, serie} -> InfluxConnection.save_measurement(serie)
-                {:error, reason} -> warn reason
+                {:error, _} -> store(struct)
               end
             {:error, reason} -> warn reason
           end
@@ -32,6 +33,32 @@ defmodule Smartmeter.Measurements do
                 |> DateTime.to_unix(:nanoseconds)
     %{data | timestamp: timestamp}
   end 
+
+  defp store(struct) do
+    case struct do
+      %Telegram.Header{manufacturer: manufacturer, model: model} ->
+        Information.put("manufacturer", manufacturer)
+        Information.put("model", model)
+      %Telegram.Version{version: version} ->
+        Information.put("version", version)
+      %Telegram.EquipmentIdentifier{channel: channel, identifier: identifier} ->
+        Information.put("equipment_identifier", "#{channel}:#{identifier}")
+      %Telegram.Timestamp{timestamp: timestamp} ->
+        Information.put("timestamp", timestamp)
+      %Telegram.TariffIndicator{indicator: indicator} ->
+        Information.put("active_tariff", indicator)
+      %Telegram.PowerFailure{type: :short, count: count} ->
+        Information.put("power_failures_short", count)
+      %Telegram.PowerFailure{type: :long, count: count} ->
+        Information.put("power_failures_long", count)
+      %Telegram.TextMessage{text: text} ->
+        Information.put("last_text_message", text)
+      %Telegram.MessageCode{code: code} ->
+        Information.put("last_message_code", code)        
+      unknown -> warn "I dont know what you mean with #{inspect(unknown)}"
+
+    end
+  end
 
   def to_serie(%Telegram.TotalEnergy{direction: direction, tariff: tariff, unit: "kWh", value: value}) do
     {:ok, %Series.TotalEnergy{}

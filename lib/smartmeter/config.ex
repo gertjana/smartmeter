@@ -33,7 +33,7 @@ defmodule Smartmeter.Config do
   end
 
   def put(key, value) do
-    info "updating #{key} with #{value}, #{typeof(value)}"
+    debug "updating config: #{key} with #{value}, #{typeof(value)}"
     Smartmeter.Config 
       |> Smartmeter.Repo.get_by(key: key)
       |> changeset(%{value: value})

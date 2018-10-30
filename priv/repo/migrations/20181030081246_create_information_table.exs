@@ -1,8 +1,8 @@
-defmodule Smartmeter.Repo.Migrations.CreateConfig do
+defmodule Smartmeter.Repo.Migrations.CreateInformationTable do
   use Ecto.Migration
 
   def change do
-    create table(:config) do
+    create table(:information) do
       add :key, :string
       add :value, :string
 
