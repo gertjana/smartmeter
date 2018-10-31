@@ -14,8 +14,9 @@ defmodule Smartmeter.Application do
       supervisor(SmartmeterWeb.Endpoint, []),
       # Start your own worker by calling: Smartmeter.Worker.start_link(arg1, arg2, arg3)
       # worker(Smartmeter.Worker, [arg1, arg2, arg3]),
+      {ConCache, [name: :my_cache, ttl_check_interval: false]},
       worker(Smartmeter.Serial, [Smartmeter.Serial]),
-      Smartmeter.InfluxConnection
+      Smartmeter.InfluxConnection,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

@@ -32,10 +32,11 @@ defmodule Smartmeter.Config do
     |> validate_required([:key, :value])
   end
 
-  def put(key, value) do
+  def put(key, value) when is_atom(key) do
     debug "updating config: #{key} with #{value}, #{typeof(value)}"
+#    ConCache.put(:my_cache, key, value)
     Smartmeter.Config 
-      |> Smartmeter.Repo.get_by(key: key)
+      |> Smartmeter.Repo.get_by(key: Atom.to_string(key))
       |> changeset(%{value: value})
       |> Smartmeter.Repo.update
   end
@@ -48,12 +49,17 @@ defmodule Smartmeter.Config do
     end
   end
 
-  defp get(key) do
-    config = Smartmeter.Config |> Smartmeter.Repo.get_by(key: key)
-    case  config do
-      nil -> nil
-      c   -> c.value 
-    end
+  defp get(key) when is_atom(key) do
+#    case ConCache.get(:my_cache, key) do
+ #     value -> value
+#      nil -> 
+        config = Smartmeter.Config |> Smartmeter.Repo.get_by(key: Atom.to_string(key))
+               case  config do
+                 nil -> nil
+                 c   -> c.value 
+               end
+ #   end
+
   end
 
   def get(key, :string),  do: get(key)
