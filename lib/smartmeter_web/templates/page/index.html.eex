@@ -108,7 +108,8 @@
                     <%= v |> Enum.map(fn i -> %>
                       <tr>
                         <td><%= i.key %></td>
-                        <td><%= case i.key do
+                        <td><%= 
+                        case i.key do
                           "mbus_device_type" -> Smartmeter.MBusDevice.to_device_type(String.to_integer(i.value)).meter
                           _ -> i.value 
                         end %></td>

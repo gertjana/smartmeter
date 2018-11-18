@@ -15,7 +15,7 @@ defmodule SmartmeterWeb.PageController do
     |> Map.keys
     |> Enum.map(fn c -> {c, 
                          {ConCache.get(:my_cache, String.to_atom("mbus_device_measurement_#{c}")),
-                          ConCache.get(:my_cache, String.to_atom("mbus_device_measurement_timestamp#{c}"))}} end)
+                          ConCache.get(:my_cache, String.to_atom("mbus_device_measurement_timestamp_#{c}"))}} end)
     |> Map.new
   end
 
@@ -29,11 +29,11 @@ defmodule SmartmeterWeb.PageController do
       |> a(:total_energy_consumed_low)
       |> a(:total_energy_produced_normal)
       |> a(:total_energy_produced_low)
-      |> a(:active_power_consumed)
+      |> a(:active_power_consumed_all)
       |> a(:active_power_consumed_l1)
       |> a(:active_power_consumed_l2)
       |> a(:active_power_consumed_l3)
-      |> a(:active_power_produced)
+      |> a(:active_power_produced_all)
       |> a(:active_power_produced_l1)
       |> a(:active_power_produced_l2)
       |> a(:active_power_produced_l3)

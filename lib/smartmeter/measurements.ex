@@ -1,30 +1,46 @@
 defmodule Smartmeter.Measurements do
 	import Logger
-  alias Smartmeter.InfluxConnection, as: InfluxConnection
-  alias P1.Telegram, as: Telegram
-  alias Smartmeter.Series, as: Series
-  alias Smartmeter.Information, as: Information
+  alias Smartmeter.InfluxConnection,  as: InfluxConnection
+  alias Smartmeter.Series,            as: Series
+  alias Smartmeter.Information,       as: Information
+  alias P1.Header,                    as: Header
+  alias P1.Channel,                   as: Channel
+  alias P1.Tags,                      as: Tags
 
 	def persist(line) do
 		case P1.parse(line) do
 			{:ok, parsed} ->
           debug inspect(parsed)
-          case parsed |> P1.to_struct do
-            {:ok, struct} ->
-              debug inspect(struct)
-              case struct |> to_serie do
-                {:ok, serie} -> InfluxConnection.save_measurement(serie)
-                {:error, _} -> store(struct)
-              end
-            {:error, reason} -> warn reason
+          case parsed |> to_serie do
+            {:ok, serie} -> InfluxConnection.save_measurement(serie)
+            {:error, _} -> store(parsed)
           end
       {:error, reason} -> warn reason
  		end
 	end
 
-  defp value(data, value), do: %{data | fields: %{data.fields | value: value}}
+  defp store([%Header{manufacturer: manufacturer, model: model}]) do
+    Information.put("manufacturer", manufacturer)
+    Information.put("model", model)
+  end
 
-  defp tag(data, tag, value), do: %{data | tags: Map.put(data.tags, tag, value)}
+  defp store([_, %Tags{tags: [{:general, item}]}, [value]]) do
+    Information.put(Atom.to_string(item), value)
+  end
+
+  defp store([%Channel{medium: _, channel: channel}, %Tags{tags: [{:mbus, item}]}, [value]]) do
+    Information.put(Atom.to_string(item), value, channel)
+  end
+
+  defp store([_,  %Tags{tags: [{:power_failures, item}]}, [value]]) do
+    Information.put("power_failures_#{Atom.to_string(item)}", value)    
+  end
+
+  defp store(unknown) do
+    warn "I dont know what you mean with #{inspect(unknown)}"
+  end
+
+  defp value(data, value), do: %{data | fields: %{data.fields | value: value}}
 
   defp timestamp(data, datetime_str) do
     timestamp = datetime_str 
@@ -34,108 +50,42 @@ defmodule Smartmeter.Measurements do
     %{data | timestamp: timestamp}
   end 
 
-  defp store(struct) do
-    case struct do
-      %Telegram.Header{manufacturer: manufacturer, model: model} ->
-        Information.put("manufacturer", manufacturer)
-        Information.put("model", model)
-      %Telegram.Version{version: version} ->
-        Information.put("version", version)
-      %Telegram.EquipmentIdentifier{channel: channel, identifier: identifier} ->
-        Information.put("equipment_identifier", identifier, channel)
-      %Telegram.Timestamp{timestamp: timestamp} ->
-        Information.put("timestamp", timestamp)
-      %Telegram.TariffIndicator{indicator: indicator} ->
-        Information.put("active_tariff", Atom.to_string(indicator))
-      %Telegram.PowerFailure{type: :short, count: count} ->
-        Information.put("power_failures_short", Integer.to_string(count))
-      %Telegram.PowerFailure{type: :long, count: count} ->
-        Information.put("power_failures_long", Integer.to_string(count))
-      %Telegram.TextMessage{text: text} ->
-        Information.put("last_text_message", text)
-      %Telegram.MessageCode{code: code} ->
-        Information.put("last_message_code", code)     
-      %Telegram.MbusDeviceType{channel: channel, type: type} ->
-        Information.put("mbus_device_type", Integer.to_string(type), channel)   
-      %Telegram.Checksum{code: _} -> nil
-      unknown -> warn "I dont know what you mean with #{inspect(unknown)}"
+  defp tag(data, tag, value), do: %{data | tags: Map.put(data.tags, tag, value)}
 
-    end
+  defp tags(serie, tags) do
+    tags |> List.foldl(serie, fn ({k,v}, acc) -> acc |> tag(k,v) end)
   end
 
-  def to_serie(%Telegram.TotalEnergy{direction: direction, tariff: tariff, unit: "kWh", value: value}) do
-    key = case {direction, tariff} do
-      {:consume, :normal} -> :total_energy_consumed_normal
-      {:consume, :low} -> :total_energy_consumed_low
-      {:produce, :normal} -> :total_energy_produced_normal
-      {:produce, :low} -> :total_energy_produced_low
-    end
-    ConCache.put(:my_cache, key, "#{value} kWh")
-    {:ok, %Series.TotalEnergy{}
-      |> value(value)
-      |> tag(:direction, direction)
-      |> tag(:energy, :total)
-      |> tag(:tariff, tariff)
-    }
+  def to_serie([_, %Tags{tags: [{:power, :active}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_power_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).phase}", value.value)
+    {:ok, %Series.ActivePower{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie(%Telegram.ActivePower{direction: direction, phase: phase, unit: "kW", value: value}) do
-    key = case {direction, phase} do
-      {:consume, :all} -> :active_power_consumed
-      {:consume, :l1}  -> :active_power_consumed_l1
-      {:consume, :l2}  -> :active_power_consumed_l2
-      {:consume, :l3}  -> :active_power_consumed_l3
-      {:produce, :all} -> :active_power_produced
-      {:produce, :l1}  -> :active_power_produced_l1
-      {:produce, :l2}  -> :active_power_produced_l2
-      {:produce, :l3}  -> :active_power_produced_l3
-    end
-    ConCache.put(:my_cache, key, "#{value} kW")
-
-    {:ok, %Series.ActivePower{}
-      |> value(value)
-      |> tag(:direction, direction)
-      |> tag(:phase, phase)
-      |> tag(:power, :active)
-    }
+  def to_serie([_, %Tags{tags: [{:energy, :total}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "total_energy_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).tariff}", value.value)
+    {:ok, %Series.TotalEnergy{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie(%Telegram.Voltage{phase: phase, unit: "V", value: value}) do
-    case phase do 
-      :l1 -> ConCache.put(:my_cache, :voltage_l1, "#{value} V")
-      :l2 -> ConCache.put(:my_cache, :voltage_l2, "#{value} V")
-      :l3 -> ConCache.put(:my_cache, :voltage_l3, "#{value} V")
-    end
-    {:ok, %Series.Voltage{}
-      |> value(value)
-      |> tag(:voltage, :active)
-      |> tag(:phase, phase)
-    }
+  def to_serie([_, %Tags{tags: [{:voltage, :active}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_voltage_#{Map.new(tags.tags).phase}", value.value)
+    {:ok, %Series.Voltage{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie(%Telegram.Amperage{phase: phase, unit: "A", value: value}) do
-    case phase do 
-      :l1 -> ConCache.put(:my_cache, :amperage_l1, "#{value} A")
-      :l2 -> ConCache.put(:my_cache, :amperage_l2, "#{value} A")
-      :l3 -> ConCache.put(:my_cache, :amperage_l3, "#{value} A")
-    end
-    {:ok, %Series.Amperage{}
-      |> value(value)
-      |> tag(:amperage, :active)
-      |> tag(:phase, phase)
-    }
+  def to_serie([_, %Tags{tags: [{:amperage, :active}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_amperage_#{Map.new(tags.tags).phase}", value.value)
+    {:ok, %Series.Amperage{} |> tags(tags) |> value(value.value)}
   end
 
+  def to_serie([_, %Tags{tags: [{:general, :tariff_indicator}]}, [value]]) do
+    ConCache.put(:my_cache, "active_tariff", value.value)
+    %Series.TariffIndicator{} |> value(value)
+  end
 
-  def to_serie(%Telegram.MbusDeviceMeasurement{channel: channel, timestamp: timestamp, unit: "m3", value: value}) do
-    ConCache.put(:my_cache, String.to_atom("mbus_device_measurement_#{channel}"), "#{value} m3")
-    ConCache.put(:my_cache, String.to_atom("mbus_device_measurement_timestamp#{channel}"), timestamp)
-    {:ok, %Series.MbusMeasurement{}
-      |> value(value)
-      |> tag(:channel, channel)
-      |> tag(:volume, :total)
-      |> timestamp(timestamp)
-  }
+  def to_serie([%Channel{channel: channel}, %Tags{tags: [:mbus, :measurement]} = tags, [ts, value]]) do
+    {:ok, %Series.MbusMeasurement{} 
+    |> tags(tags) |> tag(:volume, :total) |> tag(:channel, channel) 
+    |> timestamp(ts)
+    |> value(value.value)}
   end
 
   def to_serie(unknown) do
