@@ -57,27 +57,27 @@ defmodule Smartmeter.Measurements do
   end
 
   def to_serie([_, %Tags{tags: [{:power, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_power_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).phase}", value.value)
+    ConCache.put(:my_cache, "active_power_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).phase}" |> String.to_atom, value.value)
     {:ok, %Series.ActivePower{} |> tags(tags) |> value(value.value)}
   end
 
   def to_serie([_, %Tags{tags: [{:energy, :total}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "total_energy_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).tariff}", value.value)
+    ConCache.put(:my_cache, "total_energy_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).tariff}" |> String.to_atom, value.value)
     {:ok, %Series.TotalEnergy{} |> tags(tags) |> value(value.value)}
   end
 
   def to_serie([_, %Tags{tags: [{:voltage, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_voltage_#{Map.new(tags.tags).phase}", value.value)
+    ConCache.put(:my_cache, "active_voltage_#{Map.new(tags.tags).phase} |> String.to_atom", value.value)
     {:ok, %Series.Voltage{} |> tags(tags) |> value(value.value)}
   end
 
   def to_serie([_, %Tags{tags: [{:amperage, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_amperage_#{Map.new(tags.tags).phase}", value.value)
+    ConCache.put(:my_cache, "active_amperage_#{Map.new(tags.tags).phase} |> String.to_atom", value.value)
     {:ok, %Series.Amperage{} |> tags(tags) |> value(value.value)}
   end
 
   def to_serie([_, %Tags{tags: [{:general, :tariff_indicator}]}, [value]]) do
-    ConCache.put(:my_cache, "active_tariff", value.value)
+    ConCache.put(:my_cache, "active_tariff" |> String.to_atom, value.value)
     %Series.TariffIndicator{} |> value(value)
   end
 

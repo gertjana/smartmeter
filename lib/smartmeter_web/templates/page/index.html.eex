@@ -48,14 +48,14 @@
           <tbody>
             <tr scope="row">
               <th>Consumed</th>
-              <td><%= @active_power_consumed %></td>
+              <td><%= @active_power_consumed_all %></td>
               <td><%= @active_power_consumed_l1 %></td>
               <td><%= @active_power_consumed_l2 %></td>
               <td><%= @active_power_consumed_l3 %></td>
             </tr>
             <tr scope="row">
               <th>Produced</th>
-              <td><%= @active_power_produced %></td>
+              <td><%= @active_power_produced_all %></td>
               <td><%= @active_power_produced_l1 %></td>
               <td><%= @active_power_produced_l2 %></td>
               <td><%= @active_power_produced_l3 %></td>

@@ -44,7 +44,7 @@ defmodule Smartmeter.Mixfile do
       {:nerves_uart, "~> 1.2"},
       {:instream, "~> 0.18"},
       {:timex, "~> 3.1"},
-      {:p1_parser, "~> 0.1.10"},
+      {:p1_parser, path: "../p1_parser"},
       {:con_cache, "~> 0.13.0"}
     ]
   end
