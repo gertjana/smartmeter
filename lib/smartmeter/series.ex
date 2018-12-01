@@ -4,6 +4,7 @@ defmodule Smartmeter.Series do
 	  use Instream.Series
 
 	  series do
+      database    "smartmeter_measurements"
 	    measurement "active_power"
 
 	    tag :power
@@ -18,6 +19,7 @@ defmodule Smartmeter.Series do
 		use Instream.Series
 
 		series do
+      database    "smartmeter_measurements"
 	    measurement "total_energy"
 		
       tag :energy
@@ -32,6 +34,7 @@ defmodule Smartmeter.Series do
     use Instream.Series
 
     series do
+      database    "smartmeter_measurements"
       measurement "voltage"
     
       tag :voltage
@@ -45,6 +48,7 @@ defmodule Smartmeter.Series do
     use Instream.Series
 
     series do
+      database    "smartmeter_measurements"
       measurement "amperage"
     
       tag :amperage
@@ -58,6 +62,7 @@ defmodule Smartmeter.Series do
     use Instream.Series
 
     series do
+      database    "smartmeter_measurements"
       measurement "mbus_measurement"
 
       tag :volume
@@ -71,6 +76,7 @@ defmodule Smartmeter.Series do
     use Instream.Series
 
     series do
+      database    "smartmeter_measurements"
       measurement "tariff_indicator"
 
       field :value  

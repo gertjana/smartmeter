@@ -53,35 +53,35 @@ defmodule Smartmeter.Measurements do
   defp tag(data, tag, value), do: %{data | tags: Map.put(data.tags, tag, value)}
 
   defp tags(serie, tags) do
-    tags |> List.foldl(serie, fn ({k,v}, acc) -> acc |> tag(k,v) end)
+    tags.tags |> List.foldl(serie, fn ({k,v}, acc) -> acc |> tag(k,v) end)
   end
 
-  def to_serie([_, %Tags{tags: [{:power, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_power_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).phase}" |> String.to_atom, value.value)
+  def to_serie([_, %Tags{tags: [{:power, :active}, {:phase, phase}, {:direction, direction}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_power_#{direction}_#{phase}" |> String.to_atom, value.value)
     {:ok, %Series.ActivePower{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie([_, %Tags{tags: [{:energy, :total}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "total_energy_#{Map.new(tags.tags).direction}_#{Map.new(tags.tags).tariff}" |> String.to_atom, value.value)
+  def to_serie([_, %Tags{tags: [{:energy, :total}, {:direction, direction}, {:tariff, tariff}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "total_energy_#{direction}_#{tariff}" |> String.to_atom, value.value)
     {:ok, %Series.TotalEnergy{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie([_, %Tags{tags: [{:voltage, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_voltage_#{Map.new(tags.tags).phase} |> String.to_atom", value.value)
+  def to_serie([_, %Tags{tags: [{:voltage, :active}, {:phase, phase}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_voltage_#{phase}" |> String.to_atom, value.value)
     {:ok, %Series.Voltage{} |> tags(tags) |> value(value.value)}
   end
 
-  def to_serie([_, %Tags{tags: [{:amperage, :active}]} = tags, [value]]) do
-    ConCache.put(:my_cache, "active_amperage_#{Map.new(tags.tags).phase} |> String.to_atom", value.value)
+  def to_serie([_, %Tags{tags: [{:amperage, :active}, {:phase, phase}]} = tags, [value]]) do
+    ConCache.put(:my_cache, "active_amperage_#{phase}" |> String.to_atom, value.value)
     {:ok, %Series.Amperage{} |> tags(tags) |> value(value.value)}
   end
 
   def to_serie([_, %Tags{tags: [{:general, :tariff_indicator}]}, [value]]) do
-    ConCache.put(:my_cache, "active_tariff" |> String.to_atom, value.value)
-    %Series.TariffIndicator{} |> value(value)
+    ConCache.put(:my_cache, "active_tariff" |> String.to_atom, value)
+    {:ok, %Series.TariffIndicator{} |> value(value)}
   end
 
-  def to_serie([%Channel{channel: channel}, %Tags{tags: [:mbus, :measurement]} = tags, [ts, value]]) do
+  def to_serie([%Channel{channel: channel}, %Tags{tags: [{:mbus, :measurement}]} = tags, [ts, value]]) do
     {:ok, %Series.MbusMeasurement{} 
     |> tags(tags) |> tag(:volume, :total) |> tag(:channel, channel) 
     |> timestamp(ts)

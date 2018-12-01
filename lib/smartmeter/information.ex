@@ -37,7 +37,11 @@ defmodule Smartmeter.Information do
     |> Enum.group_by(fn x -> x.channel end)
   end
 
-  def getAll() do
+  def get_from_channel(channel) do
+    Smartmeter.Repo.all(from i in Smartmeter.Information, where: i.channel == ^channel) 
+  end
+
+  def get_all() do
     Smartmeter.Repo.all(from i in Smartmeter.Information, order_by: i.channel)
   end
 end

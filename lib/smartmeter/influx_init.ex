@@ -7,7 +7,7 @@ defmodule InfluxInit do
     config =
       Keyword.merge(
         conn.config(),
-        database:  "smartmeter",
+        database: "smartmeter_measurements",
         host: "localhost",
         port: 8086
       )

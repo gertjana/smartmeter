@@ -16,13 +16,13 @@
           <tbody>
             <tr scope="row">
               <th>Consumed</th>
-              <td><%= @total_energy_consumed_normal %></td>
-              <td><%= @total_energy_consumed_low %></td>
+              <td><%= @total_energy_consume_normal %></td>
+              <td><%= @total_energy_consume_low %></td>
             </tr>
             <tr scope="row">
               <th>Produced</th>
-              <td><%= @total_energy_produced_normal %></td>
-              <td><%= @total_energy_produced_low %></td>
+              <td><%= @total_energy_produce_normal %></td>
+              <td><%= @total_energy_produce_low %></td>
             </tr>
           </tbody>
         </table>
@@ -48,31 +48,31 @@
           <tbody>
             <tr scope="row">
               <th>Consumed</th>
-              <td><%= @active_power_consumed_all %></td>
-              <td><%= @active_power_consumed_l1 %></td>
-              <td><%= @active_power_consumed_l2 %></td>
-              <td><%= @active_power_consumed_l3 %></td>
+              <td><%= @active_power_consume_all %></td>
+              <td><%= @active_power_consume_l1 %></td>
+              <td><%= @active_power_consume_l2 %></td>
+              <td><%= @active_power_consume_l3 %></td>
             </tr>
             <tr scope="row">
               <th>Produced</th>
-              <td><%= @active_power_produced_all %></td>
-              <td><%= @active_power_produced_l1 %></td>
-              <td><%= @active_power_produced_l2 %></td>
-              <td><%= @active_power_produced_l3 %></td>
+              <td><%= @active_power_produce_all %></td>
+              <td><%= @active_power_produce_l1 %></td>
+              <td><%= @active_power_produce_l2 %></td>
+              <td><%= @active_power_produce_l3 %></td>
             </tr>
             <tr scope="row">
               <th>Voltage</th>
               <td></td>
-              <td><%= @voltage_l1 %></td>
-              <td><%= @voltage_l2 %></td>
-              <td><%= @voltage_l3 %></td>
+              <td><%= @active_voltage_l1 %></td>
+              <td><%= @active_voltage_l2 %></td>
+              <td><%= @active_voltage_l3 %></td>
             </tr>
             <tr scope="row">
               <th>Amperage</th>
               <td></td>
-              <td><%= @amperage_l1 %></td>
-              <td><%= @amperage_l2 %></td>
-              <td><%= @amperage_l3 %></td>
+              <td><%= @active_amperage_l1 %></td>
+              <td><%= @active_amperage_l2 %></td>
+              <td><%= @active_amperage_l3 %></td>
             </tr>
           </tbody>
         </table>
