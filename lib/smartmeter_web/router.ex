@@ -17,7 +17,6 @@ defmodule SmartmeterWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/",     PageController,   :index
-    get  "/status", PageController, :status
     get  "/conf", ConfigController, :index
     post "/conf", ConfigController, :submit
   end
