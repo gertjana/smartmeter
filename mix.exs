@@ -45,7 +45,9 @@ defmodule Smartmeter.Mixfile do
       {:instream, "~> 0.18"},
       {:timex, "~> 3.1"},
       {:p1_parser, "~> 0.2.1"},
-      {:con_cache, "~> 0.13.0"}
+      {:con_cache, "~> 0.13.0"},
+      {:crc, "~> 0.9.1"},
+      {:hexate,  ">= 0.6.0"}
     ]
   end
 

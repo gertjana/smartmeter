@@ -34,7 +34,6 @@ defmodule Smartmeter.Config do
 
   def put(key, value) when is_atom(key) do
     debug "updating config: #{key} with #{value}, #{typeof(value)}"
-#    ConCache.put(:my_cache, key, value)
     Smartmeter.Config 
       |> Smartmeter.Repo.get_by(key: Atom.to_string(key))
       |> changeset(%{value: value})
@@ -50,20 +49,16 @@ defmodule Smartmeter.Config do
   end
 
   defp get(key) when is_atom(key) do
-#    case ConCache.get(:my_cache, key) do
- #     value -> value
-#      nil -> 
-        config = Smartmeter.Config |> Smartmeter.Repo.get_by(key: Atom.to_string(key))
-               case  config do
-                 nil -> nil
-                 c   -> c.value 
-               end
- #   end
-
+    config = Smartmeter.Config |> Smartmeter.Repo.get_by(key: Atom.to_string(key))
+    case  config do
+      nil -> nil
+      c   -> c.value 
+    end
   end
 
   def get(key, :string),  do: get(key)
   def get(key, :integer), do: get(key) |> String.to_integer()
   def get(key, :float),   do: get(key) |> String.to_float()
   def get(key, :boolean), do: get(key) |> to_boolean()
+  def get(key, :atom),    do: get(key) |> String.to_atom()
 end

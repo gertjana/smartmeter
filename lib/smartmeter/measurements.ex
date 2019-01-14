@@ -7,8 +7,12 @@ defmodule Smartmeter.Measurements do
   alias P1.Channel,                   as: Channel
   alias P1.Tags,                      as: Tags
 
-	def persist(line) do
-		case P1.parse(line) do
+  def persist(txt, :telegram) do
+    txt |> String.split("\r\n") |> Enum.map(&String.trim(&1)) |> Enum.map(&persist(&1, :line))
+  end
+
+	def persist(txt, :line) do
+		case P1.parse(txt) do
 			{:ok, parsed} ->
           debug inspect(parsed)
           case parsed |> to_serie do

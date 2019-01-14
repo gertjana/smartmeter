@@ -18,23 +18,26 @@ defmodule Smartmeter.Serial do
   # Callbacks
 
   def init(:ok) do
+    framing = Smartmeter.Config.get(:serial_framing, :atom)
     case Smartmeter.Config.get(:serial_enable, :boolean) do
       true ->
         device =  Smartmeter.Config.get(:serial_device, :string)
         speed = Smartmeter.Config.get(:serial_baudrate, :integer)
+
         {:ok, pid} = Nerves.UART.start_link
-        connect(pid, device, speed)
+        connect(pid, device, speed, framing)
         info "Opened serial connection #{inspect(pid)} #{device} #{speed}"
       false ->
         warn "Serial connection not enabled"
     end
-    {:ok, %{}}
+    {:ok, %{framing: framing}}
   end
 
   def handle_info({:nerves_uart, _device, message}, state) do
-    debug message
+    debug inspect(message)
+
     if ! String.starts_with?(message, "#") do
-      Smartmeter.Measurements.persist(message)
+      Smartmeter.Measurements.persist(message, state.framing)
     end
     {:noreply, state}
   end
@@ -44,8 +47,11 @@ defmodule Smartmeter.Serial do
     {:reply, ports, state}
   end
 
-  def connect(pid, device, rate) do
-    Nerves.UART.open(pid, device, speed: rate, framing: {Nerves.UART.Framing.Line, separator: "\r\n"}, active: true)
+  def connect(pid, device, rate, framing) do
+    case framing do
+      :line -> Nerves.UART.open(pid, device, speed: rate, framing: {Nerves.UART.Framing.Line, separator: "\r\n"}, active: true)
+      :telegram -> Nerves.UART.open(pid, device, speed: rate, framing: Smartmeter.Framing.P1, active: true)
+    end
   end
 
   def handle_cast({:nerves_uart, _pid, data}, _from, state) do

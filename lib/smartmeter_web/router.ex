@@ -17,12 +17,14 @@ defmodule SmartmeterWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/",     PageController,   :index
+    get  "/status", PageController, :status
     get  "/conf", ConfigController, :index
     post "/conf", ConfigController, :submit
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", SmartmeterWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", SmartmeterWeb do
+    pipe_through :api
+
+    get  "/status", ApiController, :status
+  end
 end

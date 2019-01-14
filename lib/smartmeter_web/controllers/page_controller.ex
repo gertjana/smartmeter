@@ -45,4 +45,5 @@ defmodule SmartmeterWeb.PageController do
       |> assign_from_cache(:active_amperage_l3)
       |> render("index.html")
   end
+
 end
