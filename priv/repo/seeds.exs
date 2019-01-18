@@ -12,3 +12,4 @@
 Smartmeter.Repo.insert!(%Smartmeter.Config{key: "serial_enable", value: "false"})
 Smartmeter.Repo.insert!(%Smartmeter.Config{key: "serial_baudrate", value: "115200"})
 Smartmeter.Repo.insert!(%Smartmeter.Config{key: "serial_device", value: "/dev/ttyUSB0"})
+Smartmeter.Repo.insert!(%Smartmeter.Config{key: "serial_framing", value: "telegram"})

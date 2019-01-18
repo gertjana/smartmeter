@@ -41,13 +41,15 @@ defmodule Smartmeter.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:nerves_uart, "~> 1.2"},
       {:instream, "~> 0.18"},
       {:timex, "~> 3.1"},
       {:p1_parser, "~> 0.2.1"},
       {:con_cache, "~> 0.13.0"},
       {:crc, "~> 0.9.1"},
-      {:hexate,  ">= 0.6.0"}
+      {:hexate,  ">= 0.6.0"},
+      {:distillery, "~> 2.0"}
     ]
   end
 

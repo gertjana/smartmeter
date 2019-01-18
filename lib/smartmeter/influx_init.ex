@@ -4,14 +4,6 @@ defmodule InfluxInit do
   @spec init(module) :: :ok
   def init(conn) do
     info "Init InfluxConnection"
-    config =
-      Keyword.merge(
-        conn.config(),
-        database: "smartmeter_measurements",
-        host: "localhost",
-        port: 8086
-      )
-
-    Application.put_env(:smartmeter, conn, config)
+    Application.put_env(:smartmeter, conn, conn.config())
   end
 end

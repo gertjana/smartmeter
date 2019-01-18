@@ -14,6 +14,13 @@ config :smartmeter, SmartmeterWeb.Endpoint,
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
                     cd: Path.expand("../assets", __DIR__)]]
 
+config :smartmeter, Smartmeter.InfluxConnection,
+  database:  "smartmeter_measurements",
+  host: "localhost",
+  port: 8086,
+  scheme: "http",
+  writer: Instream.Writer.Line
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
