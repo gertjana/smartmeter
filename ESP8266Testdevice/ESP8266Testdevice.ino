@@ -19,8 +19,8 @@ char* message[]={"/XMX5LGBBFG10",
   "1-0:2.8.1(000010.981*kWh)",
   "1-0:2.8.2(000028.031*kWh)",
   "0-0:96.14.0(0001)",
-  "1-0:1.7.0(00.494*kW)",
-  "1-0:2.7.0(00.000*kW)",
+  "1-0:1.7.0(00.###*kW)",
+  "1-0:2.7.0(00.###*kW)",
   "0-0:96.7.21(00004)",
   "0-0:96.7.9(00003)",
   "1-0:99.97.0(3)(0-0:96.7.19)(160315184219W)(0000000310*s)(160207164837W)(0000000981*s)(151118085623W)(0000502496*s)",
@@ -123,7 +123,7 @@ void handleNotFound(){
 void setup(void){
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-
+  randomSeed(analogRead(0));
   Serial.println("");
   Serial.print("# ");
   while (WiFi.status() != WL_CONNECTED) {
@@ -146,7 +146,6 @@ void setup(void){
 
 void loop(void){
   server.handleClient();
-  
   unsigned long currentMillis = millis();
 
   if (currentMillis - previousMillis >= interval) {
@@ -154,7 +153,10 @@ void loop(void){
 
     if (hammerTime) {
       for (int i = 0; message[i] != "EOF"; i++) {
-        Serial.println(message[i]);
+        String l = String(message[i]);
+        String nrs = String(random(250,750), DEC);
+        l.replace("###", nrs);
+        Serial.println(l);
 //        delay(100);
       }
     }
