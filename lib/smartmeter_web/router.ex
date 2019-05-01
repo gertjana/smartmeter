@@ -5,6 +5,7 @@ defmodule SmartmeterWeb.Router do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_flash
+    plug Phoenix.LiveView.Flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -19,6 +20,7 @@ defmodule SmartmeterWeb.Router do
     get  "/",     PageController,   :index
     get  "/conf", ConfigController, :index
     post "/conf", ConfigController, :submit
+    get  "rpigui", RpiGuiController, :index
   end
 
   scope "/api", SmartmeterWeb do

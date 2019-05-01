@@ -4,6 +4,7 @@ defmodule SmartmeterWeb.ApiController do
 
   def status(conn, _params) do
     consumed_power = ConCache.get(:my_cache, :active_power_consume_all)
+    produced_power = ConCache.get(:my_cache, :active_power_produce_all)
     current_tariff = ConCache.get(:my_cache, :active_tariff)
 
     conn 

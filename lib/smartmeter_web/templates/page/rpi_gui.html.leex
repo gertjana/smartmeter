@@ -1,0 +1,10 @@
+<div style="font-size:20px;position:absolute;z-index:1000;right:10px;">
+	<div style="float:right;">Tariff: <%= @tariff %></div>
+</div>
+<%= raw Chartkick.line_chart @data,
+			points: false, 
+			curve: true, 
+			suffix: " kWh", 
+			legend: true, 
+			library: %{ xAxis: %{ visible: false } } 
+%>

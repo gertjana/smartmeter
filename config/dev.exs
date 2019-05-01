@@ -12,7 +12,10 @@ config :smartmeter, SmartmeterWeb.Endpoint,
   code_reloader: true,
   check_origin: false,
   watchers: [node: ["node_modules/brunch/bin/brunch", "watch", "--stdin",
-                    cd: Path.expand("../assets", __DIR__)]]
+                    cd: Path.expand("../assets", __DIR__)]],
+  live_view: [
+    signing_salt: "allyourbasearebelongtous"
+  ]                    
 
 config :smartmeter, Smartmeter.InfluxConnection,
   database:  "smartmeter_measurements",
@@ -44,7 +47,8 @@ config :smartmeter, SmartmeterWeb.Endpoint,
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
       ~r{lib/smartmeter_web/views/.*(ex)$},
-      ~r{lib/smartmeter_web/templates/.*(eex)$}
+      ~r{lib/smartmeter_web/templates/.*(eex)$},
+      ~r{lib/smartmeter_web/live/.*(ex)$}
     ]
   ]
 

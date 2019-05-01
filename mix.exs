@@ -33,11 +33,12 @@ defmodule Smartmeter.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.4"},
-      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix, "~> 1.4.3"},
+      {:phoenix_pubsub, "~> 1.1.2"},
       {:phoenix_ecto, "~> 3.2"},
       {:postgrex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.10"},
+      {:phoenix_html, "~> 2.13.2"},
+      {:phoenix_live_view, github: "phoenixframework/phoenix_live_view"},
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
@@ -49,6 +50,7 @@ defmodule Smartmeter.Mixfile do
       {:con_cache, "~> 0.13.0"},
       {:crc, "~> 0.9.1"},
       {:hexate,  ">= 0.6.0"},
+      {:chartkick, "~>0.3.0"},
       {:distillery, "~> 2.0"}
     ]
   end

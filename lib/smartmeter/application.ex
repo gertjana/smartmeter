@@ -12,7 +12,7 @@ defmodule Smartmeter.Application do
       supervisor(SmartmeterWeb.Endpoint, []),
       {ConCache, [name: :my_cache, ttl_check_interval: false]},
       worker(Smartmeter.Serial, [Smartmeter.Serial]),
-      Smartmeter.InfluxConnection,
+      Smartmeter.InfluxConnection
     ]
 
     opts = [strategy: :one_for_one, name: Smartmeter.Supervisor]
