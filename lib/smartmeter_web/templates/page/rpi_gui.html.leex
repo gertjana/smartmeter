@@ -1,10 +1,35 @@
-<div style="font-size:20px;position:absolute;z-index:1000;right:10px;">
-	<div style="float:right;">Tariff: <%= @tariff %></div>
+<div style="font-size:20px;">
+	<div style="float:right;margin-bottom:10px;">
+		T: <%= @tariff %> 
+		<span style="color:#D66">C: <%= @consumed %> kWh </span>
+		<span style="color:#6B6">P: <%= @produced %> kWh</span
+	</div>
 </div>
 <%= raw Chartkick.line_chart @data,
 			points: false, 
 			curve: true, 
 			suffix: " kWh", 
 			legend: true, 
-			library: %{ xAxis: %{ visible: false } } 
+			colors: ["#6B6", "#D66"],
+			height: "240px",
+			library: %{ 
+				chart: %{ 
+					backgroundColor: "#000"
+				}, 
+				xAxis: %{ 
+					visible: false 
+				},
+				yAxis: %{
+					labels: %{
+						style: %{
+							color: "#CCC"
+						}
+					}
+				},
+				legend: %{
+					itemStyle: %{
+						color: "#CCC"
+					}
+				}
+			} 
 %>
