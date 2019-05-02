@@ -154,7 +154,7 @@ void loop(void){
     if (hammerTime) {
       for (int i = 0; message[i] != "EOF"; i++) {
         String l = String(message[i]);
-        String nrs = String(random(250,750), DEC);
+        String nrs = String(random(0,999), DEC);
         l.replace("###", nrs);
         Serial.println(l);
 //        delay(100);
