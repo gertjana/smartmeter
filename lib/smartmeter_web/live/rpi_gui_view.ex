@@ -30,13 +30,18 @@ defmodule SmartmeterWeb.RpiGuiView do
   defp get_status() do 
     consumed_power = ConCache.get(:my_cache, :active_power_consume_all)
     produced_power = ConCache.get(:my_cache, :active_power_produce_all)
-    current_tariff = ConCache.get(:my_cache, :active_tariff)
+    current_tariff = 
 
-    info "C: #{consumed_power} P: #{produced_power}"
     %{
       consumed: consumed_power, 
       produced: produced_power, 
-      tariff: tariff(current_tariff),
+      tariff: tariff(ConCache.get(:my_cache, :active_tariff)),
+      voltage_l1: ConCache.get(:my_cache, :active_voltage_l1),
+      voltage_l2: ConCache.get(:my_cache, :active_voltage_l2),
+      voltage_l3: ConCache.get(:my_cache, :active_voltage_l3),
+      amperage_l1: ConCache.get(:my_cache, :active_amperage_l1),
+      amperage_l2: ConCache.get(:my_cache, :active_amperage_l2),
+      amperage_l3: ConCache.get(:my_cache, :active_amperage_l3),
       data: get_data(consumed_power, produced_power)
     }
   end
