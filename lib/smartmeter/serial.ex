@@ -18,12 +18,11 @@ defmodule Smartmeter.Serial do
   # Callbacks
 
   def init(:ok) do
-    framing = Smartmeter.Config.get(:serial_framing, :atom)
-    case Smartmeter.Config.get(:serial_enable, :boolean) do
+    framing = get_config(:framing)
+    device = get_config(:device)
+    speed = get_config(:baudrate)
+    case get_config(:enable) do
       true ->
-        device =  Smartmeter.Config.get(:serial_device, :string)
-        speed = Smartmeter.Config.get(:serial_baudrate, :integer)
-
         {:ok, pid} = Nerves.UART.start_link
         connect(pid, device, speed, framing)
         info "Opened serial connection #{inspect(pid)} #{device} #{speed}"
@@ -58,4 +57,9 @@ defmodule Smartmeter.Serial do
     info inspect(data)
     {:no_reply, state}
   end
+
+  defp get_config(item) do
+    Application.get_env(:smartmeter, Smartmeter.Serial)[item]
+  end
+
 end

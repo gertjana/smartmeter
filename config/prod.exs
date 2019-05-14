@@ -19,6 +19,13 @@ config :smartmeter, Smartmeter.InfluxConnection,
   scheme: "http",
   writer: Instream.Writer.Line
 
+config :smartmeter, Smartmeter.Serial,
+  device: "/dev/ttyUSB0",
+  baudrate: 115200,
+  enable: false,
+  framing: :telegram
+
+
 # ## Using releases
 #
 # If you are doing OTP releases, you need to instruct Phoenix

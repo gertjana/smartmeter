@@ -18,7 +18,7 @@
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
             <li><a href="/">Home</a></li>
-            <li><a href="/conf">Configuration</a></li>
+            <li><a href="/rpigui">rPi</a></li>
           </ul>
         </nav>
         <span><h1>Smartmeter</h1></span>

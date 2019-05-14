@@ -24,6 +24,12 @@ config :smartmeter, Smartmeter.InfluxConnection,
   scheme: "http",
   writer: Instream.Writer.Line
 
+config :smartmeter, Smartmeter.Serial,
+  device: "/dev/ttyUSB0",
+  baudrate: 115200,
+  enable: false,
+  framing: :telegram
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

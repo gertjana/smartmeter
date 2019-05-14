@@ -18,9 +18,7 @@ defmodule SmartmeterWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get  "/",     PageController,   :index
-    get  "/conf", ConfigController, :index
-    post "/conf", ConfigController, :submit
-    get  "rpigui", RpiGuiController, :index
+    get  "/rpigui", RpiGuiController, :index
   end
 
   scope "/api", SmartmeterWeb do
