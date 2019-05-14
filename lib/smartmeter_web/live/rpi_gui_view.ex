@@ -1,6 +1,5 @@
 defmodule SmartmeterWeb.RpiGuiView do
   use Phoenix.LiveView
-  import Logger
 
   @refresh_interval 10_000
   @nr_of_values 20
@@ -11,15 +10,7 @@ defmodule SmartmeterWeb.RpiGuiView do
 
   def mount(_session, socket) do
     Process.send_after(self(), {:update_status, socket}, @refresh_interval)
-    {:ok, assign(socket, get_status)}
-  end
-
-  def handle_event("refresh", _value, socket) do
-    send(self(), :refresh)
-  end
-
-  def handle_info(:refresh, socket) do
-    {:noreply, assign(socket, get_status())}
+    {:ok, assign(socket, get_status())}
   end
 
   def handle_info({:update_status, socket}, _sender) do
@@ -30,7 +21,6 @@ defmodule SmartmeterWeb.RpiGuiView do
   defp get_status() do 
     consumed_power = ConCache.get(:my_cache, :active_power_consume_all)
     produced_power = ConCache.get(:my_cache, :active_power_produce_all)
-    current_tariff = 
 
     %{
       consumed: consumed_power, 
@@ -69,7 +59,7 @@ defmodule SmartmeterWeb.RpiGuiView do
 
   defp get_serie(name, list) do
     data = [1..Enum.count(list), list] |> Enum.zip |> Map.new
-    %{"name": name, "data": data} 
+    %{name: name, data: data} 
   end
 
   defp tariff(tariff) do
