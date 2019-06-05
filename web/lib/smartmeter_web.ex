@@ -22,7 +22,6 @@ defmodule SmartmeterWeb do
       use Phoenix.Controller, namespace: SmartmeterWeb
       import Plug.Conn
       import SmartmeterWeb.Router.Helpers
-      import SmartmeterWeb.Gettext
     end
   end
 
@@ -33,15 +32,14 @@ defmodule SmartmeterWeb do
 
       # Import convenience functions from controllers
       import Phoenix.Controller, only: [get_flash: 2, view_module: 1]
-      
+
       import Phoenix.LiveView, only: [live_render: 2, live_render: 3]
-      
+
       # Use all HTML functionality (forms, tags, etc)
       use Phoenix.HTML
 
       import SmartmeterWeb.Router.Helpers
       import SmartmeterWeb.ErrorHelpers
-      import SmartmeterWeb.Gettext
     end
   end
 
@@ -57,7 +55,6 @@ defmodule SmartmeterWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import SmartmeterWeb.Gettext
     end
   end
 
