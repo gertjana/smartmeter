@@ -12,8 +12,14 @@
   },
   "devDependencies": {
     "babel-brunch": "7.0.1",
-    "brunch": "^4.0.2",
-    "clean-css-brunch": "^3.0.0",
+    "brunch": "4.0.2",
+    "clean-css-brunch": "3.0.0",
     "uglify-js-brunch": "2.10.0"
+  },
+  "overrides": {
+    "braces": "3.0.3",
+    "micromatch": "4.0.8",
+    "brace-expansion": "4.0.1",
+    "path-to-regexp": "8.3.0"
   }
 }
