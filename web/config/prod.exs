@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :smartmeter, SmartmeterWeb.Endpoint,
   http: [port: {:system, "PORT"}],

@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :smartmeter, SmartmeterWeb.Endpoint,
   secret_key_base: "/AUElhfsWcn22HdPcaZwhXWH58ulEFLd9pM+nqyvm5mcrl38/ircDGODeDdNjY2R",
